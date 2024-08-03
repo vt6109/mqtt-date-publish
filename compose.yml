@@ -1,0 +1,31 @@
+services:
+
+  mqtt-date-publish:
+    image: vt6109/mqtt-date-publish
+    build:
+      context: ./mqtt-publish-date
+      dockerfile: Dockerfile
+    environment:
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_PORT: ${MQTT_PORT}
+    depends_on:
+      mosquitto:
+        condition: service_started
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    ports:
+      - 1883:1883
+    command: ["/usr/sbin/mosquitto", "-c", "/mosquitto-no-auth.conf"]
+
+  mqtt-listener:
+    image: vt6109/mqtt-listener
+    build:
+      context: ./mqtt-listen
+      dockerfile: Dockerfile
+    environment:
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_PORT: ${MQTT_PORT}
+    depends_on:
+      mosquitto:
+        condition: service_started
