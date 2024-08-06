@@ -16,7 +16,10 @@ MQTT_TOPIC=${MQTT_TOPIC:-date}
 while true; do
 
   # Get the current date/time
-  current_datetime=$(date)
+  # current_datetime=$(date)
+  # https://unix.stackexchange.com/questions/164826/date-command-iso-8601-option
+  current_datetime=$(date +"%Y-%m-%dT%H:%M:%S%z")
+  
 
   # Publish the current datetime to the configured topic/broker
   mosquitto_pub -h "$MQTT_HOST" -p "$MQTT_PORT" -t "$MQTT_TOPIC" -m "$current_datetime" -u "$MQTT_USER" -P "$MQTT_PASSWORD"
